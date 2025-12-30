@@ -1,16 +1,14 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.SceneManagement;
 
 public class NPC_Behaviour : MonoBehaviour
 {
 
     [SerializeField] private Vector3 destination;
-    [SerializeField] private Vector3 min, max;
     [SerializeField] private GameObject player;
 
-    [SerializeField] private int childrenIndex;
-    [SerializeField] private Transform path;
 
     [SerializeField] private float playerDetectionDistance;
     [SerializeField] private bool playerDetected;
@@ -42,9 +40,21 @@ public class NPC_Behaviour : MonoBehaviour
     }
     
 
-    private Vector3 RandomDestination()
+    private Vector3 RandomNavMeshPoint(float radius)
     {
-        return new Vector3(Random.Range(min.x, max.x), 0, Random.Range(min.z, max.z));
+        for (int i = 0; i < 30; i++)
+        {
+            Vector3 randomDirection = Random.insideUnitSphere * radius;
+            randomDirection.y = 0;
+            randomDirection += transform.position;
+
+            if (NavMesh.SamplePosition(randomDirection, out NavMeshHit hit, radius, NavMesh.AllAreas))
+            {
+                return hit.position;
+            }
+        }
+
+        return transform.position + transform.forward * 2f;
     }
 
     #region Always Detect
@@ -65,20 +75,19 @@ public class NPC_Behaviour : MonoBehaviour
     #region Patroll Movement
     IEnumerator Patroll()
     {
-        destination = path.GetChild(childrenIndex).position;
+        destination = RandomNavMeshPoint(10f);
         GetComponent<NavMeshAgent>().SetDestination(destination);
 
         while (true)
         {
             if(Vector3.Distance(transform.position, destination) < 1f)
             {
-                childrenIndex++;
-                childrenIndex = childrenIndex % path.childCount;
+                //yield return new WaitForSeconds(2f);
 
-                destination = path.GetChild(childrenIndex).position;
+                destination = RandomNavMeshPoint(10f);
                 GetComponent<NavMeshAgent>().SetDestination(destination);
             }
-            yield return new WaitForSeconds(1);
+            yield return null;
         }
     }
     #endregion
@@ -141,6 +150,20 @@ public class NPC_Behaviour : MonoBehaviour
             }
         }
 
+
+    #endregion
+
+
+
+    #region Collider Player
+
+        private void OnCollisionEnter(Collision other)
+        {
+            if (other.gameObject.CompareTag("Player"))
+            {
+                SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+            }
+        }
 
     #endregion
 
