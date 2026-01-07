@@ -9,6 +9,8 @@ public class NPC_Behaviour : MonoBehaviour
     [SerializeField] private Vector3 destination;
     [SerializeField] private GameObject player;
 
+    private Vector3 randomPoint;
+
 
     [SerializeField] private float playerDetectionDistance;
     [SerializeField] private bool playerDetected;
@@ -48,10 +50,13 @@ public class NPC_Behaviour : MonoBehaviour
             randomDirection.y = 0;
             randomDirection += transform.position;
 
+            randomPoint = randomDirection;
+
             if (NavMesh.SamplePosition(randomDirection, out NavMeshHit hit, radius, NavMesh.AllAreas))
             {
                 return hit.position;
             }
+
         }
 
         return transform.position + transform.forward * 2f;
@@ -66,7 +71,7 @@ public class NPC_Behaviour : MonoBehaviour
             destination = player.transform.position;
             GetComponent<NavMeshAgent>().SetDestination(destination);
             yield return new WaitForEndOfFrame();
-            yield return new WaitForSeconds(1);
+            yield return new WaitForSeconds(0.25f);
         }
     }
     #endregion
