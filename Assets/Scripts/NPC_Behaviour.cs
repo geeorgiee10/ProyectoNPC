@@ -1,7 +1,7 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
-using UnityEngine.SceneManagement;
+
 
 public class NPC_Behaviour : MonoBehaviour
 {
@@ -17,11 +17,14 @@ public class NPC_Behaviour : MonoBehaviour
 
     private Coroutine runningPatroll;
 
+    
+
 
     public void Start()
     {
         /*destination = RandomDestination();
         GetComponent<NavMeshAgent>().SetDestination(destination);*/
+        
 
         runningPatroll = StartCoroutine(Patroll());
         //StartCoroutine(DistanceDetection()); 
@@ -166,10 +169,9 @@ public class NPC_Behaviour : MonoBehaviour
         {
             if (other.gameObject.CompareTag("Player"))
             {
-                SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+                EstadosPartida.instance.Perder();
             }
         }
-
     #endregion
 
 
