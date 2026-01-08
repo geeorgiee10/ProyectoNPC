@@ -18,6 +18,7 @@ public class SpawnNPC : MonoBehaviour
             Vector3 posicion = puntoSpawn.position + offset;
 
             Instantiate(npcPrefab, posicion, puntoSpawn.rotation);
+
         }
     }
 }

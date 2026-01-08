@@ -177,15 +177,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6007180743642840524, guid: 5a796ed211b2cec468ecadad11acb207, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 30.37
+      value: 19.49573
       objectReference: {fileID: 0}
     - target: {fileID: 6007180743642840524, guid: 5a796ed211b2cec468ecadad11acb207, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 6007180743642840524, guid: 5a796ed211b2cec468ecadad11acb207, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 20.94
+      value: 8.00317
       objectReference: {fileID: 0}
     - target: {fileID: 6007180743642840524, guid: 5a796ed211b2cec468ecadad11acb207, type: 3}
       propertyPath: m_LocalRotation.w
@@ -280,6 +280,8 @@ MonoBehaviour:
   player: {fileID: 4891612266624257451, guid: cfe4f274d1b883545a7f641a71bc7436, type: 3}
   playerDetectionDistance: 3
   playerDetected: 0
+  min: {x: 40.38, y: 0, z: -4.18}
+  max: {x: -4.29, y: 0, z: 41.1}
 --- !u!135 &4426156397575344469
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -299,5 +301,5 @@ SphereCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Radius: 3.4242668
+  m_Radius: 3.5
   m_Center: {x: 0, y: 0, z: 0}

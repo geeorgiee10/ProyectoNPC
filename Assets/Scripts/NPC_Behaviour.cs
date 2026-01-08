@@ -9,22 +9,23 @@ public class NPC_Behaviour : MonoBehaviour
     [SerializeField] private Vector3 destination;
     [SerializeField] private GameObject player;
 
-    private Vector3 randomPoint;
-
-
     [SerializeField] private float playerDetectionDistance;
     [SerializeField] private bool playerDetected;
 
-    private Coroutine runningPatroll;
+    [SerializeField] private int childrenIndex;
+    [SerializeField] private Transform path;
 
-    
+    private Coroutine runningPatroll;
+    private Coroutine runningFollow;
 
 
     public void Start()
     {
         /*destination = RandomDestination();
         GetComponent<NavMeshAgent>().SetDestination(destination);*/
-        
+
+        //path = GameObject.FindGameObjectWithTag("Path").transform;
+        player = GameObject.FindGameObjectWithTag("Player");
 
         runningPatroll = StartCoroutine(Patroll());
         //StartCoroutine(DistanceDetection()); 
@@ -47,22 +48,17 @@ public class NPC_Behaviour : MonoBehaviour
 
     private Vector3 RandomNavMeshPoint(float radius)
     {
-        for (int i = 0; i < 30; i++)
+        
+        Vector3 randomDirection = Random.insideUnitSphere * radius;
+        randomDirection.y = 0;
+        randomDirection += transform.position;
+
+        if (NavMesh.SamplePosition(randomDirection, out NavMeshHit hit, radius, NavMesh.AllAreas))
         {
-            Vector3 randomDirection = Random.insideUnitSphere * radius;
-            randomDirection.y = 0;
-            randomDirection += transform.position;
-
-            randomPoint = randomDirection;
-
-            if (NavMesh.SamplePosition(randomDirection, out NavMeshHit hit, radius, NavMesh.AllAreas))
-            {
-                return hit.position;
-            }
-
+            return hit.position;
         }
-
         return transform.position + transform.forward * 2f;
+
     }
 
     #region Always Detect
@@ -73,7 +69,7 @@ public class NPC_Behaviour : MonoBehaviour
         {
             destination = player.transform.position;
             GetComponent<NavMeshAgent>().SetDestination(destination);
-            yield return new WaitForEndOfFrame();
+            //yield return new WaitForEndOfFrame();
             yield return new WaitForSeconds(0.25f);
         }
     }
@@ -98,6 +94,26 @@ public class NPC_Behaviour : MonoBehaviour
             yield return null;
         }
     }
+
+
+    /*IEnumerator Patroll()
+    {
+        destination = path.GetChild(childrenIndex).position;
+        GetComponent<NavMeshAgent>().SetDestination(destination);
+
+        while (true)
+        {
+            if(Vector3.Distance(transform.position, destination) < 0.25f)
+            {
+                childrenIndex++;
+                childrenIndex = childrenIndex % path.childCount;
+
+                destination = path.GetChild(childrenIndex).position;
+                GetComponent<NavMeshAgent>().SetDestination(destination);
+            }
+            yield return new WaitForSeconds(1);
+        }
+    }*/
     #endregion
 
 
@@ -117,7 +133,7 @@ public class NPC_Behaviour : MonoBehaviour
                 playerDetected = true;
                 destination = player.transform.position;
                 GetComponent<NavMeshAgent>().SetDestination(destination);
-            }
+            }  
             else
             {
                 playerDetected = false;
@@ -125,7 +141,7 @@ public class NPC_Behaviour : MonoBehaviour
                     runningPatroll = StartCoroutine(Patroll());
             }
 
-            yield return new WaitForSeconds(1);
+            yield return new WaitForSeconds(0.25f);
         }
     }
 
@@ -139,11 +155,12 @@ public class NPC_Behaviour : MonoBehaviour
             {
                 if(runningPatroll != null)
                 {
-                    StopCoroutine(Patroll());
+                    StopCoroutine(runningPatroll);
                     runningPatroll = null;
                 }
                 playerDetected = true;
-                StartCoroutine(Follow());
+                if (runningFollow == null) 
+                    runningFollow = StartCoroutine(Follow());
             }
         }
 
@@ -151,9 +168,13 @@ public class NPC_Behaviour : MonoBehaviour
         {
             if(other.gameObject.CompareTag("Player"))
             {
-                StopCoroutine(Follow());
-                playerDetected = false;
-                if(runningPatroll == null)
+                if (runningFollow != null) 
+                { 
+                    StopCoroutine(runningFollow); 
+                    runningFollow = null; 
+                } 
+                // Volver a patrullar 
+                if (runningPatroll == null) 
                     runningPatroll = StartCoroutine(Patroll());
             }
         }
