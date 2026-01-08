@@ -13,10 +13,10 @@ public class NPC_Behaviour : MonoBehaviour
     [SerializeField] private bool playerDetected;
 
     [SerializeField] private int childrenIndex;
-    [SerializeField] private Transform path;
 
     private Coroutine runningPatroll;
     private Coroutine runningFollow;
+
 
 
     public void Start()
@@ -94,26 +94,6 @@ public class NPC_Behaviour : MonoBehaviour
             yield return null;
         }
     }
-
-
-    /*IEnumerator Patroll()
-    {
-        destination = path.GetChild(childrenIndex).position;
-        GetComponent<NavMeshAgent>().SetDestination(destination);
-
-        while (true)
-        {
-            if(Vector3.Distance(transform.position, destination) < 0.25f)
-            {
-                childrenIndex++;
-                childrenIndex = childrenIndex % path.childCount;
-
-                destination = path.GetChild(childrenIndex).position;
-                GetComponent<NavMeshAgent>().SetDestination(destination);
-            }
-            yield return new WaitForSeconds(1);
-        }
-    }*/
     #endregion
 
 

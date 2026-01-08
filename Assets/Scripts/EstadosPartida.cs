@@ -14,7 +14,7 @@ public class EstadosPartida : MonoBehaviour
     public GameObject mensaje;
 
 
-    private float tiempoRestante = 5f; // 1 minuto
+    private float tiempoRestante = 60f;
 
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
